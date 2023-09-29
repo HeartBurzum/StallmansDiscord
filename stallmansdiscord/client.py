@@ -18,17 +18,19 @@ class StallmansClient(Client):
         if message.author == self.user:
             return
 
-        for patterns, callbacks in self._callbacks.items():
-            content = message.content.lower()
-            matches = []
+        content = message.content.lower()
+        matches = []
+        items_list = []
+        for pattern, callback in self._callbacks.items():
+            items_list.append([pattern, callback])
 
-            for pattern in patterns:
-                if pattern in content:
-                    matches.append(pattern)
+        for item in items_list:
+            if item[0] in content:
+                matches.append(pattern)
 
-            if len(matches) > 0:
-                for callback in callbacks:
-                    await callback(self, message, matches)
+        if matches:
+            for item in items_list:
+                await item[1](self, message, matches)
 
     @classmethod
     def register_handler(cls, *patterns):
