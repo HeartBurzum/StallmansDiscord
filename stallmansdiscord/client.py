@@ -1,20 +1,23 @@
 from collections import defaultdict
-from discord import Client, Message, Activity, ActivityType
+import discord
 
 
-class StallmansClient(Client):
+class StallmansClient(discord.Client):
     _callbacks = defaultdict(list)
 
     def __init__(self):
-        super().__init__()
+        intents = discord.Intents.all()
+        intents.members = True
+        intents.presences = True
+        super().__init__(intents=intents)
 
     async def on_ready(self):
         print(f"Logged in as {self.user}")
         await self.change_presence(
-            activity=Activity(type=ActivityType.watching, name="out for GNU")
+            activity=discord.Activity(type=discord.ActivityType.watching, name="out for GNU")
         )
 
-    async def on_message(self, message: Message):
+    async def on_message(self, message: discord.Message):
         if message.author == self.user:
             return
 
